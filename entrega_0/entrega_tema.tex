@@ -1,0 +1,86 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\begin{document}
+	
+	% --- PORTADA ---
+	\begin{titlepage}
+		\centering
+		\vspace*{4cm}
+		
+		{\LARGE \textbf{Entrega 0: Proyecto para ramo INF395 \\[0.3cm]
+				Introducción a las Redes Neuronales y Deep Learning}}\\[3cm]
+		
+		\textbf{\large Integrantes:}\\
+		\begin{itemize}[leftmargin=3cm]
+			\item Bruno Morici \hspace{0.5cm} Rol: 202373555-8
+			\item Juan Pablo Fuenzalida \hspace{0.5cm} Rol: 202373102-1
+		\end{itemize}
+		
+		\vspace{1cm}
+		\textbf{\large Ramo:}\\
+		\begin{itemize}[leftmargin=3cm]
+			\item Sigla: INF395
+			\item Semestre: 2025-2
+			\item Profesor: Alejandro Veloz
+		\end{itemize}
+		
+		\vfill
+		{\large \today}
+		
+	\end{titlepage}
+	
+	% --- CONTENIDO ---
+	\section*{Título del tema}
+	Clasificación de eventos de colisión electrónica en CERN usando aprendizaje profundo
+	
+	\section*{Tipo de problema}
+	Aprendizaje supervisado – clasificación/regresión (predicción de masa invariante, clasificación de eventos físicos)
+	
+	\section*{Descripción}
+	Se dispone de un conjunto de datos de colisiones de dos electrones (dielectron events) con características como energía, momento, cargas, ángulos y masa invariante. El dataset contiene alrededor de 100 000 eventos en el rango de masa invariante entre 2 y 110 GeV. El objetivo es utilizar técnicas de redes neuronales (por ejemplo, redes densas, CNN o GNN) para predecir la masa invariante o clasificar tipos de eventos a partir de las características disponibles.
+	
+	\section*{Problema a abordar por el grupo}
+	Nuestro objetivo es implementar y evaluar modelos de aprendizaje profundo que puedan:
+	\begin{itemize}
+		\item Predecir la masa invariante (regresión) con mínima pérdida (ej. MSE).
+		\item (Opcional) Clasificar eventos que podrían indicar procesos físicos relevantes.
+		\item Comparar resultados con implementaciones existentes como la predicción de masa usando ANN (ver repositorio en GitHub).
+	\end{itemize}
+	
+	\section*{Punto de partida}
+	Existe un repositorio público en GitHub que contiene el dataset (\texttt{dielectron.csv}) y un notebook (\texttt{prediction.ipynb}) con una predicción inicial mediante redes neuronales: \url{https://github.com/Isa1asN/cern-electron-collision-data-m-prediction}. Nuestro trabajo se diferenciará al explorar:
+	\begin{itemize}
+		\item Arquitecturas más sofisticadas (CNN sobre representación gráfica de los eventos, o GNN).
+		\item Ajuste de hiperparámetros y comparación de rendimiento.
+		\item Análisis de importancia de características (feature importance).
+	\end{itemize}
+	
+	\section*{Dataset(s)}
+	El dataset contiene 100 000 eventos de colisión electrónica con las siguientes variables:
+	\begin{itemize}
+		\item Energías (\texttt{E1}, \texttt{E2})
+		\item Componentes del momento (\texttt{px1}, \texttt{py1}, \texttt{pz1}, \texttt{px2}, \texttt{py2}, \texttt{pz2})
+		\item Momento transverso (\texttt{pt1}, \texttt{pt2})
+		\item Pseudorapidez (\texttt{eta1}, \texttt{eta2})
+		\item Ángulo phi (\texttt{phi1}, \texttt{phi2})
+		\item Carga (\texttt{Q1}, \texttt{Q2})
+		\item Masa invariante (\texttt{M})
+	\end{itemize}
+	
+	Disponible en Kaggle: \url{https://www.kaggle.com/datasets/fedesoriano/cern-electron-collision-data}. También hay un notebook de Kaggle que explora algoritmos de árbol de decisión: \url{https://www.kaggle.com/code/mariyagoliyad/dt-algorithms-for-cern-electron-collision-data}.
+	
+	\section*{Artículos relacionados}
+	\begin{itemize}
+		\item Andrews et al. (2018): Aplicación de clasificadores end-to-end basados en imagen para distinguir eventos de colisión en el LHC usando datos CMS (\url{https://arxiv.org/abs/1807.11916}).
+		\item Fernández Madrazo et al. (2017): Aplicación de redes convolucionales para clasificar colisiones en física de alta energía transformando datos físicos en imágenes (\url{https://arxiv.org/abs/1708.07034}).
+		\item Mikołaj Kita et al. (2024): Uso de modelos de difusión generativa para acelerar simulaciones de colisiones en experimentos de CERN (\url{https://arxiv.org/abs/2406.03233}).
+		\item Verdone et al. (2024): Mejora del análisis de colisiones en física de partículas con Graph Neural Networks y técnicas de atribución de datos (\url{https://arxiv.org/abs/2407.14859}).
+		\item Tesis de identificación de partículas en ALICE usando ML y modelos generativos (\url{https://alice-collaboration.web.cern.ch/node/35772}).
+	\end{itemize}
+	
+\end{document}
+
