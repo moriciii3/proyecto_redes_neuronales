@@ -1,6 +1,6 @@
 Integrantes del equipo:
 
-* Juan Pablo Fuenzalida - 202373085-8
+* Juan Pablo Fuenzalida - 202373102-1
 * Bruno Morici - 202373555-8
 * **Profesor**: Alejandro Veloz
 
