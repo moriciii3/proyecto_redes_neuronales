@@ -5,4 +5,23 @@ Integrantes del equipo:
 * **Profesor**: Alejandro Veloz
 
 ## Aspectos técnicos relevantes
-* Aspecto 1... (Tienes que tener instalado esto y esto)
+* Recomendamos el uso de un entorno virtual para no sobrecargar el sistema propio con librerías pesadas
+* El proyecto fue desarrollado y probado en Python 3.11
+* Librerías utilizadas:
+    * ipykernel
+    * numpy
+    * pandas
+    * scikit-learn
+    * matplotlib
+    * seaborn
+    * tensorflow
+    * keras
+    * opencv-python
+    * pillow
+
+Creación de entorno virtual (opcional):
+```bash
+python -m venv venv
+source venv/bin/activate  # En Windows usar `venv\Scripts\activate`
+pip install -r requirements.txt
+``` 
