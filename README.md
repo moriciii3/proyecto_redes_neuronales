@@ -14,10 +14,7 @@ Integrantes del equipo:
     * scikit-learn
     * matplotlib
     * seaborn
-    * tensorflow
     * keras
-    * opencv-python
-    * pillow
 
 Creación de entorno virtual (opcional):
 ```bash
