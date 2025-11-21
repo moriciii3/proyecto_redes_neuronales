@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Demo predicción de estudiantes</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #0f172a;
+            background-color: #0b1120;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .layout {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #1e3a8a 0%, #0b1120 45%);
+            padding: 32px clamp(16px, 5vw, 56px);
+            gap: 32px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+            color: #f8fafc;
+        }
+
+        h1 {
+            margin: 4px 0 12px;
+            font-size: clamp(24px, 4vw, 36px);
+            font-weight: 700;
+        }
+
+        .eyebrow {
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 12px;
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        .subtitle {
+            margin: 0;
+            color: #cbd5f5;
+            max-width: 640px;
+        }
+
+        .subtitle code,
+        header code {
+            background: rgba(15, 23, 42, 0.35);
+            padding: 2px 8px;
+            border-radius: 6px;
+            color: #bfdbfe;
+        }
+
+        .helper {
+            font-size: 14px;
+            color: #cbd5f5;
+            background: rgba(15, 23, 42, 0.35);
+            padding: 10px 14px;
+            border-radius: 999px;
+            align-self: center;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        .student-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        @media (max-width: 1100px) {
+            .student-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 680px) {
+            .student-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .student-card {
+            background: rgba(15, 23, 42, 0.95);
+            border-radius: 18px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 25px 40px rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(8px);
+        }
+
+        .student-card__header {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .student-card h3 {
+            margin: 4px 0;
+            font-size: 18px;
+            color: #e2e8f0;
+        }
+
+        .tag {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #93c5fd;
+        }
+
+        .student-card button {
+            padding: 9px 14px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .student-card button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.45);
+        }
+
+        .student-meta {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .student-meta li {
+            background: rgba(248, 250, 252, 0.04);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+        }
+
+        .student-meta span {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .student-meta strong {
+            color: #f8fafc;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .student-meta strong.meta-email {
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            color: #e2e8f0;
+        }
+
+        #csrf-form {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <header>
+            <div>
+                <p class="eyebrow">Demo de predicciones</p>
+                <h1>Estudiantes Enrolled sin usar en entrenamiento</h1>
+                <p class="subtitle">
+                    Elige un estudiante para simular su probabilidad de graduación con el modelo
+                    <code>student_model.pt</code>.
+                </p>
+            </div>
+            <span class="helper">
+                {% if students %}
+                    {{ students|length }} estudiantes disponibles
+                {% else %}
+                    Carga los estudiantes con <code>python manage.py load_enrolled_students</code>
+                {% endif %}
+            </span>
+        </header>
+        <main>
+            <section class="student-grid">
+                {% for student in students %}
+                    <article class="student-card">
+                        <div class="student-card__header">
+                            <div>
+                                <span class="tag">Fila {{ student.source_row }}</span>
+                                <h3>{{ student.full_name }}</h3>
+                            </div>
+                            <button
+                                type="button"
+                                class="predict-btn"
+                                data-predict-url="{% url 'predict-student' student.id %}"
+                            >
+                                Predecir
+                            </button>
+                        </div>
+                        <ul class="student-meta">
+                            <li>
+                                <span>Correo</span>
+                                <strong class="meta-email">{{ student.email }}</strong>
+                            </li>
+                            <li>
+                                <span>Curso</span>
+                                <strong>{{ student.curso|floatformat:0 }}</strong>
+                            </li>
+                            <li>
+                                <span>Edad ingreso</span>
+                                <strong>{{ student.edad|floatformat:0 }} años</strong>
+                            </li>
+                            <li>
+                                <span>Modo de aplicación</span>
+                                <strong>{{ student.modo_aplicacion|floatformat:0 }}</strong>
+                            </li>
+                            <li>
+                                <span>Nota 1er semestre</span>
+                                <strong>{{ student.cu1_nota|floatformat:1 }}</strong>
+                            </li>
+                            <li>
+                                <span>Nota 2do semestre</span>
+                                <strong>{{ student.cu2_nota|floatformat:1 }}</strong>
+                            </li>
+                        </ul>
+                    </article>
+                {% empty %}
+                    <p class="empty-state">
+                        No hay estudiantes cargados. Ejecuta
+                        <code>python manage.py load_enrolled_students</code>
+                        para generar el set de prueba.
+                    </p>
+                {% endfor %}
+            </section>
+        </main>
+    </div>
+
+    <form id="csrf-form">{% csrf_token %}</form>
+
+    <script>
+        const csrfTokenInput = document.querySelector('#csrf-form input[name="csrfmiddlewaretoken"]');
+        const csrfToken = csrfTokenInput ? csrfTokenInput.value : '';
+
+        function fetchPrediction(button) {
+            const predictUrl = button.dataset.predictUrl;
+
+            Swal.fire({
+                title: 'Calculando predicción...',
+                didOpen: () => Swal.showLoading(),
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+            });
+
+            fetch(predictUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('No se pudo obtener la predicción');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const gradPercent = (data.probability_graduate * 100).toFixed(1);
+                const dropPercent = (data.probability_dropout * 100).toFixed(1);
+                const contentHtml = `
+                    <p><strong>Probabilidad de graduarse:</strong> ${gradPercent}%</p>
+                    <p><strong>Probabilidad de deserción:</strong> ${dropPercent}%</p>
+                `;
+
+                if (data.prediction === 'Graduate') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: `${data.student} se graduará`,
+                        html: contentHtml,
+                        confirmButtonText: 'Cerrar',
+                    });
+                } else {
+                    const defaultMessage = `Hola ${data.student}, detectamos que podrías abandonar el programa. ` +
+                        `Coordinemos una reunión para apoyarte y que puedas continuar tus estudios.`;
+
+                    const formHtml = `
+                        ${contentHtml}
+                        <p style="margin-top:16px;font-weight:600;">Mensaje sugerido para ${data.student}:</p>
+                        <textarea style="width:100%;min-height:120px;border-radius:8px;padding:8px;" readonly>${defaultMessage}</textarea>
+                        <p style="font-size:12px;color:#6b7280;margin-top:8px;">Puedes copiar este mensaje y enviarlo con tu cliente de correo preferido.</p>
+                    `;
+
+                    Swal.fire({
+                        icon: 'warning',
+                        title: `${data.student} podría desertar`,
+                        html: formHtml,
+                        confirmButtonText: 'Cerrar',
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message,
+                });
+            });
+        }
+
+        document.querySelectorAll('.predict-btn').forEach(button => {
+            button.addEventListener('click', () => fetchPrediction(button));
+        });
+    </script>
+</body>
+</html>
+
